@@ -1,0 +1,863 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agentic Carrier Submissions Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  /* =========================================================
+     Racquel Yuscavage Design System — full accent palette
+     Static explorer. No JS. Inline CSS, Montserrat web font only.
+     ========================================================= */
+  :root{
+    /* foundation */
+    --paper:#fcfcfb; --paper-2:#f4f3ef; --paper-3:#e8e6e0;
+    --ink:#1c2730; --ink-2:#2f3d48; --ink-3:#51616d;
+    --hairline:#b3aea4; --hairline-soft:#d8d4cc;
+
+    /* full accent family */
+    --wisteria:#7ea4db; --dusk:#3d5882; --periwinkle:#bfc9f9; --mint:#cae0de; --berry:#b23b5e;
+    --wisteria-press:#4f79b3; --dusk-press:#2f4264; --berry-press:#962e4d;
+
+    /* pale tints for fills */
+    --wisteria-fill:#e8f0fb; --dusk-fill:#e6ebf3; --periwinkle-fill:#eef0fd;
+    --mint-fill:#e9f3f1; --berry-fill:#f6e2e9;
+
+    /* type */
+    --font:'Montserrat','Helvetica Neue',Arial,sans-serif;
+    --w-xl:200; --w-lt:300; --w-rg:400; --w-md:500; --w-sb:600; --w-bd:700;
+
+    /* per-section lead accent (rotated via .lead-* on each section) */
+    --lead:var(--dusk); --lead-press:var(--dusk-press); --lead-fill:var(--dusk-fill);
+
+    --gutter:clamp(20px, 4vw, 56px);
+    --maxw:1240px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font); font-weight:var(--w-lt);
+    font-size:17px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  h1,h2,h3,h4,p{ margin:0; }
+  a{ color:inherit; }
+
+  /* lead-accent rotation utilities */
+  .lead-wisteria{ --lead:var(--wisteria); --lead-press:var(--wisteria-press); --lead-fill:var(--wisteria-fill); }
+  .lead-dusk{ --lead:var(--dusk); --lead-press:var(--dusk-press); --lead-fill:var(--dusk-fill); }
+  .lead-berry{ --lead:var(--berry); --lead-press:var(--berry-press); --lead-fill:var(--berry-fill); }
+
+  /* shared primitives -------------------------------------------------- */
+  .wrap{ max-width:var(--maxw); margin:0 auto; padding-inline:var(--gutter); }
+
+  .eyebrow{
+    display:inline-block; font-size:12px; font-weight:var(--w-bd);
+    letter-spacing:.18em; text-transform:uppercase; color:var(--lead);
+  }
+  .meta{
+    font-size:12px; font-weight:var(--w-bd); letter-spacing:.18em;
+    text-transform:uppercase; color:var(--ink-3);
+  }
+  .dot{ color:var(--lead); }
+  .bullet{ width:8px; height:8px; border-radius:999px; background:var(--lead); display:inline-block; }
+
+  .copy{ font-weight:var(--w-lt); line-height:1.62; color:var(--ink-2); text-wrap:pretty; }
+  .copy b, .copy strong{ font-weight:var(--w-bd); color:var(--ink); }
+  .copy + .copy{ margin-top:14px; }
+
+  /* ---- sticky section nav -------------------------------------------- */
+  .topbar{
+    position:sticky; top:0; z-index:50; background:rgba(252,252,251,.92);
+    backdrop-filter:saturate(1.1) blur(6px);
+    border-bottom:1px solid var(--hairline-soft);
+  }
+  .topbar .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:24px; height:64px;
+  }
+  .brand{ display:flex; align-items:baseline; gap:12px; min-width:0; }
+  .brand .mark{
+    font-weight:var(--w-bd); letter-spacing:.16em; font-size:13px; text-transform:uppercase;
+  }
+  .brand .mark .dot{ color:var(--berry); }
+  .brand .who{ font-size:15px; color:var(--ink); font-weight:var(--w-md); letter-spacing:.02em; white-space:nowrap; }
+  nav.sections{ display:flex; align-items:center; gap:4px; flex-wrap:wrap; justify-content:flex-end; }
+  nav.sections a{
+    text-decoration:none; font-size:12.5px; font-weight:var(--w-md);
+    letter-spacing:.04em; color:var(--ink-3); padding:8px 12px; white-space:nowrap;
+    border-bottom:2px solid transparent; transition:color .15s ease, border-color .15s ease;
+  }
+  nav.sections a:hover{ color:var(--ink); }
+  nav.sections a.is-active{ color:var(--ink); border-bottom-color:var(--berry); }
+
+  /* ---- header / hero ------------------------------------------------- */
+  header.hero{ padding-top:clamp(48px,7vw,104px); padding-bottom:clamp(36px,5vw,72px); }
+  .hero .eyebrow-row{ display:flex; align-items:center; gap:18px; margin-bottom:28px; }
+  .hero .eyebrow-row .ln{ flex:1; height:1px; background:var(--hairline); }
+  .hero h1{
+    font-weight:var(--w-xl); font-size:clamp(42px,6.4vw,82px);
+    letter-spacing:-0.028em; line-height:1.01; max-width:16ch;
+  }
+  .hero .lead{
+    margin-top:28px; max-width:62ch; font-size:clamp(17px,1.5vw,21px);
+    font-weight:var(--w-lt); line-height:1.55; color:var(--ink-2); text-wrap:pretty;
+  }
+
+  /* headline figures */
+  .figures{
+    margin-top:clamp(40px,5vw,68px);
+    display:grid; grid-template-columns:repeat(3,1fr);
+    border-top:6px solid var(--ink); border-bottom:6px solid var(--ink);
+  }
+  .figure{ padding:32px 40px; border-left:1px solid var(--hairline); }
+  .figure:first-child{ border-left:0; padding-left:0; }
+  .figure .n{
+    display:block; font-weight:var(--w-xl); letter-spacing:-0.03em; line-height:.92;
+    font-size:clamp(38px,4.6vw,62px); color:var(--lead);
+  }
+  .figure .lab{
+    display:block; margin-top:16px; font-size:12px; font-weight:var(--w-bd);
+    letter-spacing:.16em; text-transform:uppercase; color:var(--ink);
+  }
+  .figure .sub{ display:block; margin-top:8px; font-size:14px; font-weight:var(--w-lt); color:var(--ink-3); line-height:1.45; }
+
+  /* ---- generic section ---------------------------------------------- */
+  section.block{ padding-block:clamp(56px,7vw,104px); border-bottom:1px solid var(--hairline-soft); }
+  .section-head{ max-width:64ch; margin-bottom:clamp(32px,4vw,56px); }
+  .section-head .eyebrow{ margin-bottom:14px; }
+  .section-head h2{
+    font-weight:var(--w-xl); font-size:clamp(30px,3.8vw,46px);
+    letter-spacing:-0.022em; line-height:1.04;
+  }
+  .section-head .kicker{ margin-top:18px; font-size:clamp(16px,1.4vw,19px); color:var(--ink-2); font-weight:var(--w-lt); line-height:1.55; text-wrap:pretty; }
+
+  /* ---- overview: four points ---------------------------------------- */
+  .four{ display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft); }
+  .point{ background:var(--paper); padding:clamp(26px,2.6vw,40px); display:flex; flex-direction:column; gap:14px; }
+  .point.fill-mint{ background:var(--mint-fill); }
+  .point.fill-peri{ background:var(--periwinkle-fill); }
+  .point.ink{ background:var(--ink); color:var(--paper); }
+  .point.ink .p-title{ color:var(--paper); }
+  .point.ink .copy{ color:#c8d2da; }
+  .point.ink .copy b{ color:#fff; }
+  .point .p-rule{ width:46px; height:3px; background:var(--lead); }
+  .point.ink .p-rule{ background:var(--periwinkle); }
+  .point .p-eyebrow{ font-size:11.5px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--lead); }
+  .point.ink .p-eyebrow{ color:var(--periwinkle); }
+  .point .p-title{ font-size:clamp(20px,1.9vw,25px); font-weight:var(--w-bd); letter-spacing:-0.01em; line-height:1.18; }
+  .point .copy{ font-size:15.5px; }
+
+  /* ---- architecture -------------------------------------------------- */
+  .arch-flow{
+    display:flex; align-items:stretch; gap:0; overflow-x:auto;
+    padding:8px 0 18px; margin-bottom:8px;
+  }
+  .node{
+    flex:1 0 200px; min-width:200px; border:1px solid var(--hairline);
+    background:var(--paper); padding:22px 22px 24px; display:flex; flex-direction:column; gap:10px;
+  }
+  .node.hub{ background:var(--periwinkle-fill); border-color:var(--periwinkle); color:var(--ink); }
+  .node .n-step{ font-size:11px; font-weight:var(--w-bd); letter-spacing:.18em; text-transform:uppercase; color:var(--lead); }
+  .node.hub .n-step{ color:var(--dusk); }
+  .node .n-title{ font-size:18px; font-weight:var(--w-bd); letter-spacing:-0.005em; line-height:1.2; }
+  .node .n-desc{ font-size:13.5px; font-weight:var(--w-lt); line-height:1.5; color:var(--ink-3); }
+  .node.hub .n-desc{ color:var(--ink-2); }
+  .connector{ flex:0 0 44px; align-self:center; display:flex; align-items:center; justify-content:center; color:var(--ink); }
+  .connector svg{ width:30px; height:18px; display:block; }
+
+  .arch-grid{ display:grid; grid-template-columns:1.3fr 1fr; gap:clamp(28px,3vw,56px); margin-top:clamp(36px,4vw,56px); }
+  @media (max-width:860px){ .arch-grid{ grid-template-columns:1fr; } }
+
+  .writers{ display:grid; gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft); }
+  .writer{ background:var(--paper); padding:18px 22px; display:flex; align-items:baseline; gap:16px; }
+  .writer .w-no{ font-size:12px; font-weight:var(--w-bd); letter-spacing:.1em; color:var(--lead); font-variant-numeric:tabular-nums; min-width:24px; }
+  .writer .w-name{ font-size:16px; font-weight:var(--w-bd); }
+  .writer .w-desc{ font-size:14px; color:var(--ink-3); font-weight:var(--w-lt); }
+  .writer .w-name + .w-desc{ margin-left:2px; }
+
+  .integrations{ background:var(--mint-fill); border:1px solid var(--mint); border-left:3px solid var(--lead); padding:26px 28px; }
+  .integrations h3{ font-size:13px; font-weight:var(--w-bd); letter-spacing:.14em; text-transform:uppercase; margin-bottom:16px; color:var(--lead); }
+  .api{ display:flex; flex-direction:column; gap:14px; }
+  .api .row{ display:flex; gap:14px; align-items:flex-start; padding-bottom:14px; border-bottom:1px solid var(--mint); }
+  .api .row:last-child{ border-bottom:0; padding-bottom:0; }
+  .api .api-name{ font-size:15px; font-weight:var(--w-bd); }
+  .api .api-desc{ font-size:13.5px; color:var(--ink-2); font-weight:var(--w-lt); line-height:1.45; }
+
+  /* ---- canonical model ----------------------------------------------- */
+  .canon{ display:grid; grid-template-columns:1fr 1.15fr; gap:clamp(28px,3.4vw,64px); align-items:start; }
+  @media (max-width:860px){ .canon{ grid-template-columns:1fr; } }
+  .canon-aside .big{ margin-top:22px; font-weight:var(--w-xl); font-size:clamp(26px,2.6vw,34px); letter-spacing:-0.02em; line-height:1.08; }
+  .canon-aside .canon-h2{ font-weight:var(--w-xl); font-size:clamp(30px,3.8vw,46px); letter-spacing:-0.022em; line-height:1.04; }
+  .canon-aside .copy{ margin-top:18px; font-size:15.5px; }
+  .tag{
+    display:inline-flex; align-items:center; gap:9px; margin-top:24px;
+    font-size:11px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--dusk); background:var(--periwinkle-fill); border:1px solid var(--periwinkle);
+    padding:7px 13px;
+  }
+  .record{ border:1px solid var(--hairline); background:var(--paper); }
+  .record .rec-head{
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+    padding:18px 24px; border-bottom:2px solid var(--ink);
+  }
+  .record .rec-head .rh-title{ font-size:14px; font-weight:var(--w-bd); letter-spacing:.04em; }
+  .record .rec-head .rh-id{ font-size:12px; color:var(--ink-3); font-weight:var(--w-md); letter-spacing:.08em; }
+  .field{ display:grid; grid-template-columns:200px 1fr; gap:18px; padding:13px 24px; border-bottom:1px solid var(--hairline-soft); }
+  .field:last-child{ border-bottom:0; }
+  .field .f-key{ font-size:11.5px; font-weight:var(--w-bd); letter-spacing:.12em; text-transform:uppercase; color:var(--ink-3); padding-top:2px; }
+  .field .f-val{ font-size:15.5px; font-weight:var(--w-md); color:var(--ink); }
+  .field .f-val .muted{ font-weight:var(--w-lt); color:var(--ink-3); }
+  .pills{ display:flex; flex-wrap:wrap; gap:7px; }
+  .pill{ font-size:12px; font-weight:var(--w-md); color:var(--dusk); background:var(--mint-fill); border:1px solid var(--mint); padding:4px 10px; }
+  .pill .ok{ color:var(--dusk); font-weight:var(--w-bd); }
+  @media (max-width:520px){ .field{ grid-template-columns:1fr; gap:5px; } }
+
+  /* ---- sample run: stepper + stages --------------------------------- */
+  .stepper{
+    display:flex; gap:1px; background:var(--hairline-soft); border:1px solid var(--hairline-soft);
+    margin-bottom:clamp(28px,3vw,44px); overflow-x:auto;
+  }
+  .step-tab{
+    flex:1 0 auto; min-width:150px; background:var(--paper); border:0; cursor:default;
+    text-align:left; padding:16px 18px; display:flex; flex-direction:column; gap:6px;
+    font-family:inherit; text-decoration:none; color:inherit;
+    border-top:3px solid transparent;
+  }
+  .step-tab[data-active="true"]{ border-top-color:var(--lead); background:var(--lead-fill); }
+  .step-tab .st-no{ font-size:11px; font-weight:var(--w-bd); letter-spacing:.16em; color:var(--lead); font-variant-numeric:tabular-nums; }
+  .step-tab .st-name{ font-size:13.5px; font-weight:var(--w-bd); letter-spacing:.01em; color:var(--ink); line-height:1.2; }
+
+  .stage-deck{ position:relative; }
+  .stage{
+    border:1px solid var(--hairline); background:var(--paper);
+    padding:clamp(28px,3vw,44px); margin-bottom:18px;
+    display:grid; grid-template-columns:auto 1fr; gap:clamp(20px,2.4vw,40px); align-items:start;
+  }
+  @media (max-width:680px){ .stage{ grid-template-columns:1fr; gap:18px; } }
+  .stage .s-index{
+    font-weight:var(--w-xl); font-size:clamp(52px,5vw,76px); letter-spacing:-0.04em;
+    line-height:.84; color:var(--lead); font-variant-numeric:tabular-nums;
+  }
+  .stage .s-body{ min-width:0; }
+  .stage .s-eyebrow{ font-size:11.5px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--lead); }
+  .stage .s-title{ margin-top:9px; font-size:clamp(21px,2.1vw,28px); font-weight:var(--w-bd); letter-spacing:-0.012em; line-height:1.16; }
+  .stage .s-desc{ margin-top:14px; font-size:16px; color:var(--ink-2); font-weight:var(--w-lt); line-height:1.6; max-width:64ch; text-wrap:pretty; }
+  .checklist{ margin-top:20px; display:grid; gap:11px; }
+  .checklist .ci{ display:grid; grid-template-columns:auto 1fr; gap:13px; align-items:start; }
+  .checklist .ci .mk{ margin-top:8px; width:8px; height:8px; border-radius:999px; background:var(--lead); flex:0 0 auto; }
+  .checklist .ci .ct{ font-size:15px; font-weight:var(--w-lt); color:var(--ink-2); line-height:1.5; }
+  .checklist .ci .ct b{ font-weight:var(--w-bd); color:var(--ink); }
+  .miniflow{ margin-top:20px; display:flex; flex-wrap:wrap; gap:8px; }
+  .miniflow .mf{ font-size:13px; font-weight:var(--w-md); color:var(--ink); border:1px solid var(--hairline); padding:7px 13px; background:var(--paper); }
+
+  .run-controls{
+    display:flex; align-items:center; justify-content:space-between; gap:18px; margin-top:24px;
+  }
+  .btn{
+    font-family:inherit; font-size:13px; font-weight:var(--w-bd); letter-spacing:.1em; text-transform:uppercase;
+    padding:13px 26px; border:2px solid var(--ink); background:var(--paper); color:var(--ink);
+    cursor:pointer; transition:background .18s ease, color .18s ease, border-color .18s ease;
+  }
+  .btn:hover{ background:var(--ink); color:var(--paper); }
+  .btn--primary{ background:var(--ink); color:var(--paper); }
+  .btn--primary:hover{ background:var(--lead); border-color:var(--lead); }
+  .btn[disabled], .btn[aria-disabled="true"]{ opacity:.4; cursor:default; }
+  .run-progress{ font-size:12px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--ink-3); }
+  .run-progress b{ color:var(--ink); }
+
+  /* ---- reliability --------------------------------------------------- */
+  .rel-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:clamp(28px,3vw,56px); }
+  @media (max-width:860px){ .rel-grid{ grid-template-columns:1fr; } }
+  .rel-card{ border-top:2px solid var(--lead); padding-top:24px; }
+  .rel-card .rc-eyebrow{ font-size:11.5px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--lead); }
+  .rel-card .rc-title{ margin-top:11px; font-size:clamp(20px,1.9vw,25px); font-weight:var(--w-bd); letter-spacing:-0.01em; line-height:1.18; }
+  .rel-card .copy{ margin-top:14px; font-size:15.5px; }
+
+  .loops{ margin-top:8px; display:grid; gap:0; }
+  .loops .lp{ display:grid; grid-template-columns:auto 1fr; gap:20px; padding:18px 0; border-top:1px solid var(--hairline-soft); }
+  .loops .lp:first-child{ border-top:0; }
+  .loops .lp .lp-no{ font-size:12px; font-weight:var(--w-bd); letter-spacing:.14em; color:var(--lead); font-variant-numeric:tabular-nums; padding-top:3px; }
+  .loops .lp .lp-when{ font-size:11.5px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--ink); }
+  .loops .lp .lp-what{ margin-top:7px; font-size:15px; font-weight:var(--w-lt); color:var(--ink-2); line-height:1.5; }
+  .chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
+  .chip{ font-size:12px; font-weight:var(--w-md); color:var(--berry); border:1px solid var(--berry); background:var(--berry-fill); padding:5px 11px; }
+  #learning-loops .chips .chip:nth-child(1){ color:var(--dusk); border-color:var(--wisteria); background:var(--wisteria-fill); }
+  #learning-loops .chips .chip:nth-child(2){ color:var(--dusk); border-color:var(--periwinkle); background:var(--periwinkle-fill); }
+  #learning-loops .chips .chip:nth-child(3){ color:var(--dusk); border-color:var(--mint); background:var(--mint-fill); }
+
+  /* ---- architecture sub-block: iterations + role line ---------------- */
+  .subblock{ margin-top:clamp(44px,5vw,72px); padding-top:clamp(32px,3.6vw,48px); border-top:2px solid var(--ink); }
+  .subhead{ max-width:66ch; }
+  .subhead .eyebrow{ margin-bottom:14px; }
+  .subhead h3{ font-weight:var(--w-xl); font-size:clamp(26px,3vw,38px); letter-spacing:-0.02em; line-height:1.07; }
+  .subhead .kicker{ margin-top:16px; font-size:clamp(15px,1.3vw,18px); color:var(--ink-2); font-weight:var(--w-lt); line-height:1.55; text-wrap:pretty; }
+
+  .iter-list{ margin-top:clamp(26px,3vw,38px); display:grid; gap:0; border-top:1px solid var(--hairline-soft); }
+  .iter{ display:grid; grid-template-columns:62px 1fr; gap:clamp(16px,2vw,30px); padding:18px 0; border-bottom:1px solid var(--hairline-soft); align-items:baseline; }
+  .iter .i-no{ font-weight:var(--w-xl); font-size:32px; letter-spacing:-0.03em; color:var(--lead); font-variant-numeric:tabular-nums; line-height:1; }
+  .iter .i-name{ font-size:18px; font-weight:var(--w-bd); letter-spacing:-0.005em; }
+  .iter .i-desc{ font-size:15px; font-weight:var(--w-lt); color:var(--ink-3); line-height:1.5; }
+  .iter .i-name + .i-desc{ margin-top:4px; }
+  @media (max-width:560px){ .iter{ grid-template-columns:1fr; gap:6px; } }
+
+  .role-line{ margin-top:clamp(28px,3vw,40px); display:grid; grid-template-columns:auto 1fr; gap:clamp(18px,2vw,30px);
+    align-items:start; border-left:3px solid var(--lead); background:var(--lead-fill); padding:clamp(22px,2.2vw,28px) clamp(24px,2.4vw,32px); }
+  .role-line .rl-eyebrow{ font-size:11.5px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--lead); white-space:nowrap; padding-top:6px; }
+  .role-line p{ font-size:clamp(17px,1.55vw,21px); font-weight:var(--w-lt); line-height:1.5; color:var(--ink); text-wrap:pretty; }
+  .role-line p b{ font-weight:var(--w-bd); }
+  @media (max-width:560px){ .role-line{ grid-template-columns:1fr; gap:12px; } }
+
+  /* ---- reliability sub-blocks: governance, failure points, measurement ---- */
+  .ctrl-list{ margin-top:clamp(22px,2.4vw,34px); display:grid; gap:0; border-top:1px solid var(--hairline-soft); }
+  .ctrl{ display:grid; grid-template-columns:30px 1fr; gap:clamp(14px,1.6vw,24px); padding:17px 0; border-bottom:1px solid var(--hairline-soft); align-items:start; }
+  .ctrl .c-no{ font-size:12px; font-weight:var(--w-bd); letter-spacing:.12em; color:var(--lead); font-variant-numeric:tabular-nums; padding-top:4px; }
+  .ctrl .c-name{ font-size:16.5px; font-weight:var(--w-bd); letter-spacing:-0.005em; }
+  .ctrl .c-desc{ font-size:15px; font-weight:var(--w-lt); color:var(--ink-2); line-height:1.52; }
+  .ctrl .c-name + .c-desc{ margin-top:5px; }
+  @media (max-width:560px){ .ctrl{ grid-template-columns:1fr; gap:5px; } }
+  .lead-line{ margin-top:14px; font-size:clamp(16px,1.4vw,19px); font-weight:var(--w-lt); color:var(--ink-2); line-height:1.55; text-wrap:pretty; max-width:72ch; }
+  .lead-line b{ font-weight:var(--w-bd); color:var(--ink); }
+  .forward{ margin-top:clamp(22px,2.2vw,30px); border-top:2px solid var(--ink); padding-top:18px;
+    font-size:15.5px; font-weight:var(--w-lt); color:var(--ink-2); line-height:1.55; text-wrap:pretty; max-width:76ch; }
+  .forward b{ font-weight:var(--w-bd); color:var(--ink); }
+  .measure-note{ margin-top:14px; font-size:15.5px; font-weight:var(--w-lt); color:var(--ink-2); line-height:1.6; text-wrap:pretty; max-width:74ch; }
+  .measure-note b{ font-weight:var(--w-bd); color:var(--ink); }
+
+  /* ---- footer -------------------------------------------------------- */
+  footer.foot{ padding-block:clamp(40px,4vw,64px); }
+  footer.foot .wrap{ border-top:6px solid var(--ink); padding-top:24px; display:flex; flex-wrap:wrap; gap:14px 20px; align-items:baseline; justify-content:space-between; }
+  footer.foot .f-name{ font-size:13px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; }
+  footer.foot .f-meta{ font-size:12px; font-weight:var(--w-md); letter-spacing:.1em; color:var(--ink-3); text-transform:uppercase; }
+  footer.foot .f-meta .sep{ color:var(--berry); margin:0 8px; }
+</style>
+</head>
+<body>
+
+<!-- ============ STICKY SECTION NAV (links wired natively; active-state JS layered later) ============ -->
+<div class="topbar">
+  <div class="wrap">
+    <div class="brand">
+      <span class="who">Princeton PO submissions automation</span>
+    </div>
+    <nav class="sections" id="section-nav" aria-label="Sections">
+      <a href="#overview" class="is-active" data-target="overview">Overview</a>
+      <a href="#architecture" data-target="architecture">Architecture</a>
+      <a href="#canonical" data-target="canonical">Canonical model</a>
+      <a href="#sample-run" data-target="sample-run">Sample run</a>
+      <a href="#reliability" data-target="reliability">Reliability</a>
+    </nav>
+  </div>
+</div>
+
+<!-- ============ HEADER / HERO ============ -->
+<header class="hero lead-dusk">
+  <div class="wrap">
+    <div class="eyebrow-row">
+      <span class="eyebrow">Interactive explorer</span>
+      <span class="ln"></span>
+      <span class="meta">Synthetic walkthrough</span>
+    </div>
+    <h1>Agentic Carrier Submissions Pipeline<span class="dot">.</span></h1>
+    <p class="lead">Explore the architecture, a sample run, and the reliability behind it.</p>
+
+    <div class="figures">
+      <div class="figure lead-wisteria">
+        <span class="n">70%</span>
+        <span class="lab">Less hands-on prep</span>
+        <span class="sub">Per submission, versus the manual workflow</span>
+      </div>
+      <div class="figure lead-dusk">
+        <span class="n">15% to under 2%</span>
+        <span class="lab">Carrier rework rate</span>
+        <span class="sub">Before and after automation</span>
+      </div>
+      <div class="figure lead-berry">
+        <span class="n">1,000+</span>
+        <span class="lab">Automated tests</span>
+        <span class="sub">Run on every build</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ OVERVIEW ============ -->
+<section class="block lead-wisteria" id="overview" data-section="overview">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Overview</span>
+      <h2>Eleven-plus carriers, notified on every provider change.</h2>
+      <p class="kicker">Princeton PO must notify more than eleven insurance carriers whenever a provider changes. Done by hand, each submission took six to eight hours and carried a real error rate. Carrier timeliness is an NCQA compliance matter, so the cost of a miss is not just rework.</p>
+    </div>
+
+    <div class="four">
+      <div class="point lead-wisteria">
+        <span class="p-rule" style="color: rgb(28, 39, 48); background-color: rgb(178, 59, 94)"></span>
+        <span class="p-eyebrow" style="color: rgb(178, 59, 94)">Before</span>
+        <h3 class="p-title">Every carrier file built by hand</h3>
+        <p class="copy">Each deliverable was assembled from conflicting source documents: a Standard spreadsheet, a Horizon spreadsheet, a CRM import, letters of intent, and an email. The rules lived in a few people's heads, and carrier timeliness sat under <b>NCQA compliance</b>.</p>
+      </div>
+
+      <div class="point fill-mint lead-dusk">
+        <span class="p-rule"></span>
+        <span class="p-eyebrow">After</span>
+        <h3 class="p-title">One canonical model feeds every writer</h3>
+        <p class="copy">A single normalized model feeds writers that generate every file, validate it, write to the CRM over API, and track to closure. A <b>human reviews every batch</b>, and the system captures what it learns along the way.</p>
+      </div>
+
+      <div class="point fill-peri lead-berry">
+        <span class="p-rule" style="background-color: rgb(61, 88, 130)"></span>
+        <span class="p-eyebrow" style="color: rgb(61, 88, 130)">How it scaled</span>
+        <h3 class="p-title">Scale is how cheaply it absorbs new work</h3>
+        <p class="copy">The second workstream shipped in <b>one to two weeks</b> against the first's four to six. Five workstreams now run on the same core, because new work reuses the canonical model rather than rebuilding from scratch.</p>
+      </div>
+
+      <div class="point lead-dusk">
+        <span class="p-rule" style="color: rgb(28, 39, 48); background-color: rgb(178, 59, 94)"></span>
+        <span class="p-eyebrow" style="color: rgb(178, 59, 94)">Role of the human</span>
+        <h3 class="p-title">Automation assembles; the reviewer judges</h3>
+        <p class="copy">Automation does the repetitive assembly. The reviewer owns the judgment call and <b>approves every batch</b> before anything reaches a carrier. Accountability stays with a person.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ARCHITECTURE ============ -->
+<section class="block lead-dusk" id="architecture" data-section="architecture">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Architecture</span>
+      <h2>Canonical-first, by design.</h2>
+      <p class="kicker">Extract every source document once into one normalized record for the Provider, Group, and Location, then derive each output from that single source of truth. Nothing is keyed twice; every file traces back to the same model.</p>
+    </div>
+
+    <!-- primary flow -->
+    <div class="arch-flow" id="arch-flow" aria-label="Pipeline flow">
+      <div class="node lead-wisteria">
+        <span class="n-step" style="color: rgb(61, 88, 130)">Step 01</span>
+        <span class="n-title">Source documents</span>
+        <span class="n-desc">Standard and Horizon spreadsheets, CRM import, letters of intent, email.</span>
+      </div>
+      <div class="connector" aria-hidden="true">
+        <svg viewBox="0 0 30 18"><path d="M0 9 H26 M20 3 L26 9 L20 15" fill="none" stroke="currentColor" stroke-width="2" style="stroke: rgb(178, 59, 94)"/></svg>
+      </div>
+      <div class="node hub">
+        <span class="n-step" style="color: rgb(61, 88, 130)">Single source of truth</span>
+        <span class="n-title">Canonical model</span>
+        <span class="n-desc">One normalized Provider, Group, and Location record.</span>
+      </div>
+      <div class="connector" aria-hidden="true">
+        <svg viewBox="0 0 30 18"><path d="M0 9 H26 M20 3 L26 9 L20 15" fill="none" stroke="currentColor" stroke-width="2" style="stroke: rgb(178, 59, 94)"/></svg>
+      </div>
+      <div class="node lead-dusk">
+        <span class="n-step" style="color: rgb(61, 88, 130)">Step 03</span>
+        <span class="n-title">Format-specific writers</span>
+        <span class="n-desc">Each carrier deliverable generated and validated from the one model.</span>
+      </div>
+      <div class="connector" aria-hidden="true">
+        <svg viewBox="0 0 30 18"><path d="M0 9 H26 M20 3 L26 9 L20 15" fill="none" stroke="currentColor" stroke-width="2" style="stroke: rgb(178, 59, 94)"/></svg>
+      </div>
+      <div class="node lead-berry">
+        <span class="n-step" style="color: rgb(61, 88, 130)">Step 04</span>
+        <span class="n-title">Dispatch and track</span>
+        <span class="n-desc">Written to the CRM over API, submitted, and tracked to closure.</span>
+      </div>
+    </div>
+
+    <div class="arch-grid">
+      <div class="lead-dusk">
+        <h3 class="meta" style="color:var(--ink); margin-bottom:18px;">Four writers, one model</h3>
+        <div class="writers">
+          <div class="writer"><span class="w-no" style="color: rgb(178, 59, 94)">01</span><span class="w-name">Standard submission</span></div>
+          <div class="writer"><span class="w-no" style="color: rgb(178, 59, 94)">02</span><span class="w-name">Horizon submission</span></div>
+          <div class="writer"><span class="w-no" style="color: rgb(178, 59, 94)">03</span><span class="w-name">SugarCRM import</span></div>
+          <div class="writer"><span class="w-no" style="color: rgb(178, 59, 94)">04</span><span class="w-name">Letters of intent</span></div>
+        </div>
+      </div>
+
+      <div class="integrations lead-dusk">
+        <h3>Integrations</h3>
+        <div class="api">
+          <div class="row">
+            <span class="bullet" style="margin-top:7px;"></span>
+            <div>
+              <div class="api-name">SugarCRM API</div>
+              <div class="api-desc">Read, create, and update records over API as part of dispatch.</div>
+            </div>
+          </div>
+          <div class="row">
+            <span class="bullet" style="margin-top:7px;"></span>
+            <div>
+              <div class="api-name">Address-validation API</div>
+              <div class="api-desc">Standardizes each service location before any file is generated.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Built in iterations -->
+    <div class="subblock lead-wisteria">
+      <div class="subhead">
+        <span class="eyebrow">Built in iterations</span>
+        <h3>Each iteration solved one problem before the next began.</h3>
+        <p class="kicker">A system a compliance-bound operation depends on cannot be built in one pass. I scoped it into five iterations, each adding a submission type on top of a shared canonical foundation, so new work reused the same model and validation instead of being rebuilt from scratch.</p>
+      </div>
+
+      <div class="iter-list">
+        <div class="iter">
+          <span class="i-no">1</span>
+          <div><div class="i-name">New additions</div><div class="i-desc">The foundation: canonical model, extractors, validators, and the first writers.</div></div>
+        </div>
+        <div class="iter">
+          <span class="i-no">2</span>
+          <div><div class="i-name">Terminations</div><div class="i-desc">Termination writers and CRM deactivation, reusing the same record.</div></div>
+        </div>
+        <div class="iter">
+          <span class="i-no">3</span>
+          <div><div class="i-name">Group onboarding</div><div class="i-desc">Multi-location group onboarding and relationship linking.</div></div>
+        </div>
+        <div class="iter">
+          <span class="i-no">4</span>
+          <div><div class="i-name">Provider changes</div><div class="i-desc">Eight change-request types, end to end.</div></div>
+        </div>
+        <div class="iter">
+          <span class="i-no">5</span>
+          <div><div class="i-name">Horizon tracking</div><div class="i-desc">Lifecycle tracking that follows each Horizon submission to closure through its error-cure loop.</div></div>
+        </div>
+      </div>
+
+      <div class="role-line lead-berry">
+        <span class="rl-eyebrow">My role</span>
+        <p><b>I designed the workflow, the integration points, the folder structure, and the rollout sequence, and I validated the output at each iteration.</b> Claude wrote the code under that direction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CANONICAL MODEL ============ -->
+<section class="block lead-berry" id="canonical" data-section="canonical">
+  <div class="wrap">
+
+    <div class="canon">
+      <div class="canon-aside lead-berry">
+        <span class="eyebrow" style="margin-bottom:14px;">Canonical model</span>
+        <h2 class="canon-h2">One record, every output.</h2>
+        <p class="big" style="font-size: 24px">Extract once. Derive everything from the same normalized record.</p>
+        <p class="copy">Every carrier file, the CRM import, and each letter of intent reads from this one model. Conflicts between source documents are resolved by a defined source-of-truth order, so the record below is the only thing downstream writers ever trust.</p>
+        <span class="tag"><span class="bullet" style="background:var(--dusk);"></span> Synthetic sample data</span>
+      </div>
+
+      <div class="record" id="canonical-record" aria-label="Canonical record (synthetic)">
+        <div class="rec-head">
+          <span class="rh-title">Provider record</span>
+          <span class="rh-id">REC · synthetic</span>
+        </div>
+        <div class="field"><span class="f-key">Provider</span><span class="f-val">Jordan A. Sample, DPM</span></div>
+        <div class="field"><span class="f-key">NPI</span><span class="f-val">0000000001</span></div>
+        <div class="field"><span class="f-key">Group</span><span class="f-val">Example Podiatry Associates PC</span></div>
+        <div class="field"><span class="f-key">Group TIN</span><span class="f-val">00-0000011</span></div>
+        <div class="field"><span class="f-key">Service location</span><span class="f-val">100 Example Drive, Ste 101, Hamilton NJ 08690</span></div>
+        <div class="field"><span class="f-key">Action</span><span class="f-val">New addition</span></div>
+        <div class="field"><span class="f-key">Effective date</span><span class="f-val">07/01/2026</span></div>
+        <div class="field">
+          <span class="f-key">Expirables</span>
+          <span class="f-val">
+            <span class="pills">
+              <span class="pill">License <span class="ok">current</span></span>
+              <span class="pill">CDS <span class="ok">current</span></span>
+              <span class="pill">DEA <span class="ok">current</span></span>
+              <span class="pill">Malpractice <span class="ok">current</span></span>
+              <span class="pill">Board cert <span class="ok">current</span></span>
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAMPLE RUN ============ -->
+<!-- Six stages laid out statically. Stepper tabs + Back/Next are scaffolding for
+     the step-through control to be wired later: each .stage carries id="stage-N"
+     and data-step; tabs carry data-step; controls carry id="run-prev"/"run-next". -->
+<section class="block lead-wisteria" id="sample-run" data-section="sample-run">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Sample run</span>
+      <h2 style="width: 516px">One provider, six stages, end to end.</h2>
+      <p class="kicker">A single synthetic addition moving through the pipeline. Every stage is shown here; the Back and Next control is scaffolding for the step-through that gets layered on later.</p>
+    </div>
+
+    <!-- stepper -->
+    <div class="stepper" id="run-stepper" role="tablist" aria-label="Sample run stages">
+      <a class="step-tab" href="#stage-1" data-step="1" data-active="true"><span class="st-no">01</span><span class="st-name">Intake</span></a>
+      <a class="step-tab" href="#stage-2" data-step="2"><span class="st-no" style="color: rgb(61, 88, 130)">02</span><span class="st-name">Extract</span></a>
+      <a class="step-tab" href="#stage-3" data-step="3"><span class="st-no" style="color: rgb(178, 59, 94)">03</span><span class="st-name">Validate</span></a>
+      <a class="step-tab" href="#stage-4" data-step="4"><span class="st-no">04</span><span class="st-name">Generate</span></a>
+      <a class="step-tab" href="#stage-5" data-step="5"><span class="st-no" style="color: rgb(61, 88, 130)">05</span><span class="st-name">Human QA</span></a>
+      <a class="step-tab" href="#stage-6" data-step="6"><span class="st-no" style="color: rgb(178, 59, 94)">06</span><span class="st-name">Dispatch &amp; track</span></a>
+    </div>
+
+    <div class="stage-deck" id="run-stages">
+
+      <article class="stage lead-wisteria" id="stage-1" data-step="1">
+        <div class="s-index">01</div>
+        <div class="s-body">
+          <span class="s-eyebrow">Intake</span>
+          <h3 class="s-title">Source documents arrive</h3>
+          <p class="s-desc">The submission begins as a stack of mismatched inputs. Nothing is normalized yet; the goal is only to gather everything tied to this provider change.</p>
+          <div class="checklist">
+            <div class="ci"><span class="mk"></span><span class="ct"><b>PO application</b> for the new provider</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Andros credentialing file</b></span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Group W-9</b> and onboarding form</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Supporting license and certification documents</b></span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage lead-dusk" id="stage-2" data-step="2">
+        <div class="s-index">02</div>
+        <div class="s-body">
+          <span class="s-eyebrow">Extract</span>
+          <h3 class="s-title">Normalized into one canonical record</h3>
+          <p class="s-desc">Every input is read once and resolved into the single Provider, Group, and Location record. Where documents disagree, conflicts are resolved by a defined source-of-truth order rather than a judgment in the moment.</p>
+          <div class="miniflow">
+            <span class="mf">Provider · Jordan A. Sample, DPM</span>
+            <span class="mf">NPI · 0000000001</span>
+            <span class="mf">Group · Example Podiatry Associates PC</span>
+            <span class="mf">Effective · 07/01/2026</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage lead-berry" id="stage-3" data-step="3">
+        <div class="s-index">03</div>
+        <div class="s-body">
+          <span class="s-eyebrow">Validate</span>
+          <h3 class="s-title">Checked before anything is generated</h3>
+          <p class="s-desc">The record is verified against hard rules first. If a check fails, no carrier file is produced, so a bad record cannot become a bad submission.</p>
+          <div class="checklist">
+            <div class="ci"><span class="mk"></span><span class="ct"><b>NPI format and check digit</b> verified</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct">All five <b>expirables current</b> (license, CDS, DEA, malpractice, board certification)</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Address standardized</b> via the validation API</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>No document conflicts</b> remaining</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage lead-dusk" id="stage-4" data-step="4">
+        <div class="s-index">04</div>
+        <div class="s-body">
+          <span class="s-eyebrow">Generate</span>
+          <h3 class="s-title">Every carrier file from one record</h3>
+          <p class="s-desc">With the record validated, each writer produces its deliverable from the same model. No file is hand-built, and all four stay consistent because they share one source.</p>
+          <div class="miniflow">
+            <span class="mf">Standard submission</span>
+            <span class="mf">Horizon submission</span>
+            <span class="mf">SugarCRM import</span>
+            <span class="mf">Letters of intent</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage lead-wisteria" id="stage-5" data-step="5">
+        <div class="s-index">05</div>
+        <div class="s-body">
+          <span class="s-eyebrow">Human QA</span>
+          <h3 class="s-title">A reviewer approves the batch</h3>
+          <p class="s-desc">Generated files are presented to a reviewer, who either approves the batch or sends it back. The system never dispatches on its own; the judgment call stays with a person accountable for it.</p>
+          <div class="checklist">
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Approve</b> to release the batch to dispatch</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Send back</b> with notes if anything looks wrong</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="stage lead-berry" id="stage-6" data-step="6">
+        <div class="s-index">06</div>
+        <div class="s-body">
+          <span class="s-eyebrow">Dispatch &amp; track</span>
+          <h3 class="s-title">Submitted, then tracked to closure</h3>
+          <p class="s-desc">On approval, the CRM is updated over API and the files are submitted to carriers. Each submission is tracked to closure, including the Horizon error-cure loop, and what the system learns flows back into the knowledge base.</p>
+          <div class="checklist">
+            <div class="ci"><span class="mk"></span><span class="ct"><b>CRM updated</b> via API</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Tracked to closure</b> with the Horizon error-cure loop</span></div>
+            <div class="ci"><span class="mk"></span><span class="ct"><b>Patterns captured</b> back into the learning loop</span></div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- step-through control scaffold (non-functional until wired) -->
+    <div class="run-controls" id="run-controls">
+      <button type="button" class="btn" id="run-prev" aria-disabled="true">Back</button>
+      <span class="run-progress" id="run-progress">Stage <b>01</b> of 06</span>
+      <button type="button" class="btn btn--primary" id="run-next">Next</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RELIABILITY ============ -->
+<section class="block lead-dusk" id="reliability" data-section="reliability">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Reliability</span>
+      <h2>Why the numbers hold.</h2>
+    </div>
+
+    <div class="rel-grid">
+      <div class="rel-card lead-wisteria">
+        <span class="rc-eyebrow">Tested on every build</span>
+        <h3 class="rc-title">A mistake breaks the build, not a live submission.</h3>
+        <p class="copy">A regression suite of more than <b>1,000 automated tests</b> runs alongside an audit harness that verifies each build phase against its acceptance criteria. If something regresses, it fails in the pipeline, never in a file sent to a carrier.</p>
+      </div>
+
+      <div class="rel-card lead-dusk">
+        <span class="rc-eyebrow">Human QA on every batch</span>
+        <h3 class="rc-title">The judgment stays with someone accountable.</h3>
+        <p class="copy">Automation handles assembly, but a reviewer approves <b>every batch</b> before it goes out. The system is built to assist the decision, not to replace the person making it.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:clamp(36px,4vw,56px);" class="lead-berry">
+      <h3 class="meta" style="color:var(--ink); margin-bottom:6px;">A three-loop learning system</h3>
+      <div class="loops" id="learning-loops">
+        <div class="lp">
+          <span class="lp-no">01</span>
+          <div>
+            <div class="lp-when">In session</div>
+            <p class="lp-what">New error patterns and document quirks are captured the moment they appear, so a hard-won lesson is never one closed window away from being lost.</p>
+          </div>
+        </div>
+        <div class="lp">
+          <span class="lp-no">02</span>
+          <div>
+            <div class="lp-when">End of session</div>
+            <p class="lp-what">Confirmed lessons are written to versioned knowledge files.</p>
+            <div class="chips">
+              <span class="chip">Error-correction log</span>
+              <span class="chip">Source-document reference guide</span>
+              <span class="chip">Revision log</span>
+            </div>
+          </div>
+        </div>
+        <div class="lp">
+          <span class="lp-no">03</span>
+          <div>
+            <div class="lp-when">Periodically</div>
+            <p class="lp-what">Recurring patterns are promoted into the skills themselves. The error-correction log was seeded from <b>145 real carrier error patterns</b>, with new entries accruing from live work.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Governance -->
+    <div class="subblock lead-dusk">
+      <div class="subhead">
+        <span class="eyebrow">Governance</span>
+        <h3>How a wrong rule gets caught.</h3>
+        <p class="kicker">New carrier requirements surface constantly, and they were never fully documented, so the risk is codifying a misunderstanding into the system. Three controls prevent that.</p>
+      </div>
+      <div class="ctrl-list">
+        <div class="ctrl">
+          <span class="c-no">01</span>
+          <div><div class="c-name">Manual-first validation</div><div class="c-desc">A new requirement is run by hand once and confirmed accepted by the carrier before it is ever written into the system. Nothing is automated until it is proven correct on a real submission.</div></div>
+        </div>
+        <div class="ctrl">
+          <span class="c-no">02</span>
+          <div><div class="c-name">Compliance in the loop</div><div class="c-desc">New carrier requirements go to our compliance officer on a notify-unless-flagged basis: the team proceeds in compliance with the requirement unless a discrepancy is flagged.</div></div>
+        </div>
+        <div class="ctrl">
+          <span class="c-no">03</span>
+          <div><div class="c-name">Weekly review</div><div class="c-desc">Every submission is logged in a tracker and reviewed by the team each week against what actually went out, so anything sent-but-unlogged or logged-but-unsent is caught.</div></div>
+        </div>
+      </div>
+      <p class="forward" style="max-width:none">In a stricter compliance environment, this moves from notify-unless-flagged to <b>documented sign-off before any rule goes live</b>, with a formal change log. The control points already exist; tightening them is a process change, not a rebuild.</p>
+    </div>
+
+    <!-- Known failure points and fallbacks -->
+    <div class="subblock lead-wisteria">
+      <div class="subhead">
+        <span class="eyebrow">Resilience</span>
+        <h3>Known failure points and fallbacks.</h3>
+        <p class="lead-line">The system is built to <b>fail in the pipeline, not in a submission</b>, and every known failure point has a defined human fallback.</p>
+      </div>
+      <div class="ctrl-list">
+        <div class="ctrl">
+          <span class="c-no">01</span>
+          <div><div class="c-name">Address-validation API down</div><div class="c-desc">A human validates service locations directly on the provider's site, adding roughly ten to fifteen minutes per submission. No data is lost.</div></div>
+        </div>
+        <div class="ctrl">
+          <span class="c-no">02</span>
+          <div><div class="c-name">Agent-platform outage</div><div class="c-desc">The pipeline runs on Claude Code, so an extended outage is the hardest stop. The fallback is the manual workflow the system replaced; a documented revert runbook is a known next step.</div></div>
+        </div>
+        <div class="ctrl">
+          <span class="c-no">03</span>
+          <div><div class="c-name">Horizon glitches versus real errors</div><div class="c-desc">Horizon returns inconsistent errors, some not legitimate. A dedicated error logger records every Horizon error, what it means, and whether it is a true error or a system glitch, so recurring quirks are recognized instantly rather than re-diagnosed.</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- How the numbers are measured -->
+    <div class="subblock lead-dusk">
+      <div class="subhead" style="max-width:none">
+        <span class="eyebrow">How the numbers are measured</span>
+        <p class="measure-note" style="max-width:none">The prep-time figure compares the manual workflow, multiple people building each file by hand over several hours, to the automated workflow, which assembles the same package in minutes with a single human review pass. The rework figure is calculated line by line at the field level, not submission by submission, so it reflects accuracy where errors actually happen. These are early numbers from a deliberately small window, tracked on every new submission as the sample grows.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="wrap">
+    <span class="f-name">Racquel Yuscavage</span>
+    <span class="f-meta">Princeton PO submissions automation <span class="sep">·</span> Interactive explorer</span>
+  </div>
+</footer>
+
+
+<script>
+(function(){
+  var st=document.createElement('style');
+  st.textContent='#run-stepper .step-tab{cursor:pointer}[id]{scroll-margin-top:84px}';
+  document.head.appendChild(st);
+  var stages=[].slice.call(document.querySelectorAll('#run-stages .stage'));
+  var tabs=[].slice.call(document.querySelectorAll('#run-stepper .step-tab'));
+  var prev=document.getElementById('run-prev'),next=document.getElementById('run-next'),prog=document.getElementById('run-progress');
+  if(stages.length&&prev&&next&&prog){
+    var i=0,pad=function(n){return(n<10?'0':'')+n;};
+    var render=function(){
+      stages.forEach(function(s,idx){s.style.display=(idx===i)?'':'none';});
+      tabs.forEach(function(t,idx){t.setAttribute('data-active',idx===i?'true':'false');});
+      prog.innerHTML='Stage <b>'+pad(i+1)+'</b> of '+pad(stages.length);
+      prev.setAttribute('aria-disabled',i===0?'true':'false');prev.disabled=(i===0);
+      next.textContent=(i===stages.length-1)?'Start over':'Next';
+    };
+    prev.addEventListener('click',function(){if(i>0){i--;render();}});
+    next.addEventListener('click',function(){i=(i===stages.length-1)?0:i+1;render();});
+    tabs.forEach(function(t,idx){t.style.cursor='pointer';t.addEventListener('click',function(e){e.preventDefault();i=idx;render();});});
+    render();
+  }
+  var navLinks=[].slice.call(document.querySelectorAll('#section-nav a[data-target]'));
+  var secs=navLinks.map(function(a){return document.getElementById(a.getAttribute('data-target'));}).filter(Boolean);
+  if(navLinks.length&&secs.length){
+    var spy=function(){var cur=secs[0];secs.forEach(function(s){if(s.getBoundingClientRect().top<=140)cur=s;});navLinks.forEach(function(a){a.classList.toggle('is-active',a.getAttribute('data-target')===cur.id);});};
+    window.addEventListener('scroll',spy,{passive:true});window.addEventListener('resize',spy);spy();
+  }
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Agentic Carrier Submissions Pipeline</title>
+<link rel="stylesheet" href="assets/styles.css" />
+
+
+<style>
+  /* ===== Remix palette migration =====
+     Foundation: warm off-white paper + deep slate ink.
+     Lead / Support / Pop: LEAD = dusk #3d5882 (title period, capability dots,
+     metric figures, AFTER-pipeline nodes); SUPPORT = periwinkle/mint pale fills;
+     POP = berry #b23b5e (the single warm legend swatch on the AFTER panel). */
+  :root{
+    --paper:#fcfcfb; --paper-2:#f4f3ef; --paper-3:#e8e6e0;
+    --ink:#1c2730; --ink-2:#2f3d48; --ink-3:#51616d;
+    --ink-inverse:#fcfcfb; --bg-inverse:#1c2730;
+    --hairline:#b3aea4; --hairline-2:#33414c;
+    --wisteria:#7ea4db; --dusk:#3d5882; --periwinkle:#bfc9f9; --mint:#cae0de; --berry:#b23b5e;
+    --wisteria-press:#4f79b3; --dusk-press:#2f4264; --berry-press:#962e4d;
+    --accent:var(--dusk); --accent-press:var(--dusk-press); --pop:var(--berry);
+    /* remap the rose-* tokens the shared CSS consumes onto the remix family */
+    --rose-50:#e8ebfd; --rose-100:#e8ebfd; --rose-300:#bfc9f9; --rose-500:var(--dusk);
+    --rose-600:#3d5882; --rose-800:#2f4264;
+  }
+  body{ background:#dcdbd5; }
+
+  @page{ size: 1820px 1024px; margin:0; }
+  /* ===== 16:9 variant — 1820 x 1024 ===== */
+  .sheet.c4{ width:1820px; height:1024px; padding:42px 60px 38px;
+    --c4-title:42px; --c4-cap:14px; --c4-metric0:50px; --c4-metric1:34px; }
+  .c4 .c4-head{ padding-bottom:18px; }
+  .c4 .c4-head .c4-eyebrow-row{ margin-bottom:14px; }
+  .c4 .c4-headrow .headline-sub{ margin-top:9px; font-size:17px; }
+  .c4 .c4-head .intro{ font-size:14.5px; line-height:1.5; }
+  .c4 .c4-body{ padding-top:16px; }
+  .c4 .rail h2{ font-size:21px; margin:11px 0 18px; }
+  .c4 .rail .caps li{ padding:9.5px 0; }
+  .c4 .rail .metrics{ padding-top:18px; gap:16px; }
+  .c4 .panel-head{ padding-bottom:8px; margin-bottom:4px; }
+
+  /* ===== HORIZONTAL flows: full-width, stacked; rail relocated to a bottom band ===== */
+  .c4 .c4-body{ display:block; flex:1; min-height:0; padding-top:10px; }
+  .c4 .c4-flows{ display:flex; flex-direction:column; gap:4px; padding-left:0; min-height:0; justify-content:flex-start; }
+  .c4 .c4-flows .panel{ flex:0 0 auto; }
+  .c4 .flow-wrap{ flex:0 0 auto; display:block; padding-top:4px; }
+  .c4 .flow-wrap .flow-svg{ width:100%; height:auto; max-width:100%; }
+  .c4 .c4-legend{ padding-top:4px; margin-top:0; }
+  /* compact panel chrome */
+  .c4 .panel-head{ padding-bottom:7px; margin-bottom:3px; }
+  .c4 .panel-head .name{ font-size:19px; }
+  .c4 .panel-head .time b{ font-size:20px; margin-bottom:1px; }
+
+  /* bottom capability band */
+  .c4 .caps-band{ flex:0 0 auto; margin-top:10px; padding-top:11px; border-top:2px solid var(--ink); }
+  .c4 .caps-band .cb-top{ display:flex; align-items:baseline; gap:16px; margin-bottom:8px; }
+  /* footer byline — left-aligned line at the foot of the page */
+  .c4 .page-byline{ flex:0 0 auto; display:flex; align-items:center; gap:11px; margin:0; padding:20px 0 0;
+    font-size:11px; font-weight:var(--w-bd); letter-spacing:.18em; text-transform:uppercase;
+    color:var(--ink-3); white-space:nowrap; }
+  .c4 .page-byline .name{ color:var(--ink); }
+  .c4 .page-byline .sep{ color:var(--accent); }
+  .c4 .page-byline a{ color:var(--ink-3); border:0; text-decoration:none; transition:color 120ms; }
+  .c4 .page-byline a:hover{ color:var(--accent); }
+  .c4 .caps-band .lab{ font-size:11px; font-weight:var(--w-bd); letter-spacing:.18em; text-transform:uppercase; color:var(--accent); white-space:nowrap; }
+  .c4 .caps-band .lab-sub{ font-size:13px; font-weight:var(--w-lt); color:var(--ink-3); letter-spacing:.01em; }
+  .c4 .caps-band .cb-grid{ display:grid; grid-template-columns:1fr 0.68fr; gap:0; align-items:stretch; }
+  /* nine capabilities, three columns of three (column-major flow) */
+  .c4 .caps-band .caps{ display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,auto);
+    grid-auto-flow:column; column-gap:40px; row-gap:0; padding:0 40px 0 0; margin:0; list-style:none; }
+  .c4 .caps-band .caps li{ display:grid; grid-template-columns:8px 1fr; gap:12px; align-items:start;
+    font-size:13px; line-height:1.28; color:var(--ink); padding:5.5px 0; border-top:1px solid var(--hairline); }
+  .c4 .caps-band .caps li:nth-child(3n+1){ border-top:0; }
+  .c4 .caps-band .caps li::before{ content:""; width:8px; height:8px; border-radius:999px; background:var(--accent); margin-top:.42em; }
+  .c4 .caps-band .metrics{ display:grid; grid-template-columns:1fr 1fr; gap:30px; align-content:center;
+    border-left:2px solid var(--ink); padding-left:34px; }
+  .c4 .caps-band .metric .num{ display:block; font-weight:var(--w-xl); line-height:1.0; color:var(--accent); letter-spacing:-0.02em; font-size:40px; text-wrap:balance; }
+  .c4 .caps-band .metric.alt .num{ font-size:40px; }
+  .c4 .caps-band .metric .num .hl{ color:var(--accent); }
+  .c4 .caps-band .metric .cap{ display:block; margin-top:9px; font-size:13px; line-height:1.34; color:var(--ink-2); font-weight:var(--w-lt); }
+  .c4 .caps-band .band-note{ margin:9px 0 0; padding-top:8px; border-top:1px solid var(--hairline);
+    font-size:12px; line-height:1.4; color:var(--ink-3); font-weight:var(--w-lt); text-wrap:pretty; }
+  .c4 .caps-band .band-note b{ font-weight:var(--w-bd); color:var(--ink); }
+  /* trim the header so two stacked flows clear 1024px */
+  .c4 .c4-head .intro{ font-size:13.5px; line-height:1.46; }
+  .c4 .c4-head{ padding-bottom:14px; }
+  .c4 .c4-head .c4-eyebrow-row{ margin-bottom:11px; }
+  .c4 .c4-head .ttl{ font-size:var(--c4-title); }
+  .c4 .rail .caps li{ font-size:var(--c4-cap); }
+  .c4 .rail .metric .num{ font-size:var(--c4-metric0); }
+  .c4 .rail .metric.alt .num{ font-size:var(--c4-metric1); }
+
+  /* header: matched to Reliability 1 masthead (fonts + spacing) */
+  .c4 .c4-head{ display:block; padding-bottom:13px; }
+  .c4 .c4-head .c4-eyebrow-row{ margin-bottom:11px; }
+  .c4 .c4-head .c4-eyebrow-row .eyebrow{ font-size:14px; }
+  .c4 .c4-headrow{ display:grid; grid-template-columns:0.74fr 1.72fr; gap:50px; align-items:start; }
+  .c4 .c4-headrow .ttl{ max-width:none; margin:0; letter-spacing:-0.025em; line-height:1.04; font-size:38px; }
+  .c4 .c4-headrow .headline-sub{ margin-top:10px; font-size:16px; font-weight:var(--w-lt); line-height:1.3; color:var(--ink-2); }
+  .c4 .c4-head .intro{ font-size:13px; line-height:1.44; color:var(--ink-2); text-wrap:pretty; margin:0; padding-top:2px; }
+  .c4 .c4-head .intro b{ font-weight:var(--w-bd); color:var(--ink); }
+  .c4 .rail .lab{ font-size:14px; }
+  .c4 .rail .metric .cap{ font-size:16px; }
+
+  /* turnaround times: periwinkle (before) and berry (after) — higher specificity to beat concept4.css */
+  .c4 .c4-flows .panel:first-child .panel-head .time.slot-time-before b{ color:#7ea4db; }
+  .c4 .c4-flows .panel-head .time.slot-time-after b{ color:#b23b5e; }
+</style>
+</head>
+<body>
+<div class="stage">
+  <section class="sheet c4 landscape" data-board data-prefix="c4" data-screen-label="Concept 4 – capability rail">
+
+    <header class="c4-head">
+      <div class="c4-eyebrow-row">
+        <span class="eyebrow accent">Process diagram</span>
+        <span class="ln"></span>
+      </div>
+      <div class="c4-headrow">
+        <div class="ttl-col">
+          <h1 class="ttl display">Agentic Carrier Submissions Pipeline</h1>
+          <p class="headline-sub">The same multi-carrier workflow, before and after automation.</p>
+        </div>
+        <p class="sub intro">Princeton PO submissions automation is an agentic Claude Code system I designed and shipped to automate how the organization reports provider changes to its 11-plus contracted insurance carriers. Built canonical-first, it extracts each source document once into one data model, then format-specific writers generate every carrier deliverable (the Standard and Horizon submissions, the SugarCRM import, and the Letters of Intent) through direct CRM and address-validation APIs, backed by a 1,000-plus-test regression suite, an audit harness, a self-improving learning loop, and human QA on every batch. The result: a <b>70% reduction in hands-on preparation time</b> per submission, and carrier submission rework reduced from <b>15% to under 2%</b>.</p>
+      </div>
+    </header>
+
+    <div class="c4-body">
+      <div class="c4-flows">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="tag"><span class="stage-no">BEFORE</span><span class="name">Manual</span></div>
+            <div class="time slot-time-before"></div>
+          </div>
+          <div class="flow-wrap slot-flow-before"></div>
+          <div class="c4-legend legend">
+            <span class="item"><span class="sw proc"></span>Process step</span>
+            <span class="item"><span class="sw diamond"></span>Decision</span>
+            <span class="item"><span class="sw loop"></span>Rework loop</span>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel-head" style="margin: 20px 0px 3px">
+            <div class="tag"><span class="stage-no">AFTER</span><span class="name">Automated pipeline</span></div>
+            <div class="time slot-time-after"></div>
+          </div>
+          <div class="flow-wrap slot-flow-after"></div>
+          <div class="c4-legend legend">
+            <span class="item"><span class="sw proc" style="background:var(--rose-100);border-color:var(--rose-500)"></span>Automated step</span>
+            <span class="item"><span class="sw term"></span>Complete</span>
+            <span class="item"><span class="sw loop"></span>Feedback loop</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="caps-band">
+      <div class="cb-top">
+        <span class="lab">What the pipeline runs on</span>
+        <span class="lab-sub">Nine capabilities behind the automated flow</span>
+      </div>
+      <div class="cb-grid">
+        <ul class="cap-list caps as-list"></ul>
+        <div class="metrics">
+          <div class="metric slot-m0"></div>
+          <div class="metric alt slot-m1"></div>
+        </div>
+      </div>
+      <p class="band-note"><b>How it’s measured.</b> Prep time compares the manual workflow to the automated one, submission by submission; rework is measured line by line. Early figures from a small sample, tracked as it grows.</p>
+    </div>
+
+    <p class="page-byline"><span class="name">Racquel Yuscavage</span><span class="sep">·</span><a href="https://racquelyuscavage.com">racquelyuscavage.com</a></p>
+
+  </section>
+</div>
+
+<script src="assets/flow-engine.js"></script>
+<script src="assets/flow-data.js"></script>
+<script src="assets/flow-data-h.js"></script>
+<script src="assets/render.js"></script>
+<script src="assets/fit.js"></script>
+
+</body>
+</html>

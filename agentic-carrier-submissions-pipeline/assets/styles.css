@@ -1,0 +1,250 @@
+/* ==========================================================================
+   Agentic Carrier Submissions Pipeline — unified stylesheet
+   Merged from montserrat.css, base.css, evals.css, concept4.css, flow.css
+   ========================================================================== */
+
+
+/* ====================== Montserrat @font-face (was montserrat.css) ====================== */
+/* Montserrat — self-hosted OTF (subset of weights used by the infographics) */
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:200;font-display:swap;src:url('../fonts/Montserrat-ExtraLight.otf') format('opentype');}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:300;font-display:swap;src:url('../fonts/Montserrat-Light.otf') format('opentype');}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:500;font-display:swap;src:url('../fonts/Montserrat-Medium.otf') format('opentype');}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:600;font-display:swap;src:url('../fonts/Montserrat-SemiBold.otf') format('opentype');}
+@font-face{font-family:'Montserrat';font-style:normal;font-weight:700;font-display:swap;src:url('../fonts/Montserrat-Bold.otf') format('opentype');}
+
+/* ====================== Base / shared (was base.css) ====================== */
+/* =========================================================
+   Insurance-pipeline infographics — shared base
+   Racquel Yuscavage Design System  ·  full rose-berry ramp
+   ========================================================= */
+:root{
+  /* Neutral foundation */
+  --paper:#F3F1ED; --paper-2:#EAE7E1; --paper-3:#D2CEC6;
+  --ink:#211F1D;  --ink-2:#363430;  --ink-3:#514D48;
+  --ink-inverse:#F3F1ED;
+  --hairline:#AFA99D; --hairline-2:#363430;
+  --bg-inverse:#11100E;
+
+  /* Full rose-berry ramp (50 -> 950) — the override for this brief */
+  --rose-50:#FAF4F6;  --rose-100:#F2DEE5; --rose-200:#E5BAC7; --rose-300:#D389A0;
+  --rose-400:#C25A7E; --rose-500:#B23B5E; --rose-600:#962E4D; --rose-700:#79253F;
+  --rose-800:#5C1C31; --rose-900:#411325; --rose-950:#260B16;
+  --accent:var(--rose-500); --accent-press:var(--rose-600);
+
+  /* Type */
+  --font:'Montserrat','Helvetica Neue',Arial,sans-serif;
+  --w-xl:200; --w-lt:300; --w-md:500; --w-sb:600; --w-bd:700;
+
+  --tr-display:-0.02em; --tr-tight:-0.01em; --tr-eyebrow:0.18em; --tr-wide:0.1em;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:var(--font);
+  font-weight:var(--w-lt);
+  color:var(--ink);
+  background:#C9C4BB;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
+
+.stage{ min-height:100vh; display:flex; align-items:flex-start; justify-content:center; padding:28px; }
+
+.sheet{
+  background:var(--paper);
+  position:relative;
+  overflow:hidden;
+  flex:none;
+  box-shadow:0 1px 0 rgba(0,0,0,.04), 0 24px 60px -28px rgba(33,31,29,.45);
+}
+.sheet.landscape{ width:297mm; height:210mm; }
+.sheet.portrait{  width:210mm; height:297mm; }
+
+.eyebrow{ font-size:11px; font-weight:var(--w-bd); letter-spacing:var(--tr-eyebrow);
+  text-transform:uppercase; color:var(--ink); display:inline-block; }
+.eyebrow.accent{ color:var(--accent); }
+.display{ font-weight:var(--w-xl); letter-spacing:var(--tr-display); line-height:1.03; }
+.h-light{ font-weight:var(--w-lt); letter-spacing:var(--tr-tight); }
+.lead{ font-weight:var(--w-lt); color:var(--ink-2); line-height:1.5; }
+.accent-dot{ color:var(--accent); }
+.dot{ color:var(--accent); }
+
+.metric .num{ font-weight:var(--w-xl); letter-spacing:-0.03em; line-height:.92; color:var(--rose-600); }
+.metric{ display:flex; flex-direction:column; gap:8px; }
+.metric .cap{ font-weight:var(--w-lt); color:var(--ink-2); line-height:1.35; }
+
+.cap-list{ list-style:none; margin:0; padding:0; display:grid; }
+.cap-list li{ display:grid; grid-template-columns:9px 1fr; gap:11px; align-items:start; }
+.cap-list li::before{ content:""; width:9px; height:9px; border-radius:999px;
+  background:var(--accent); margin-top:.5em; }
+
+.legend{ display:flex; flex-wrap:wrap; gap:14px 24px; align-items:center; }
+.legend .item{ display:flex; align-items:center; gap:9px; font-size:11px; font-weight:var(--w-md);
+  letter-spacing:.02em; color:var(--ink-2); }
+.legend .sw{ width:22px; height:14px; border:1px solid var(--ink); }
+.legend .sw.diamond{ width:15px; height:15px; transform:rotate(45deg); border:1.5px solid var(--accent); background:var(--rose-50); }
+.legend .sw.proc{ background:var(--paper); }
+.legend .sw.term{ background:var(--rose-600); border-color:var(--rose-600); border-radius:7px; }
+.legend .sw.loop{ width:22px; height:0; border:0; border-top:2px solid var(--accent); }
+
+.flow-svg{ display:block; width:100%; height:auto; }
+
+@media print{
+  body{ background:#fff; }
+  .stage{ display:block; padding:0; min-height:0; }
+  .sheet{ box-shadow:none; margin:0; transform:none !important; }
+  .fit{ height:auto !important; overflow:visible !important; display:block !important; }
+  @page{ margin:0; }
+}
+
+/* ---- fit wrapper: scales a fixed-size sheet to fit its container on screen ---- */
+.fit{ width:100%; display:flex; justify-content:center; overflow:hidden; }
+
+@media screen and (max-width:1180px){
+  .stage{ padding:0; }
+}
+
+/* ====================== One Pager — Evaluation & Reliability (was evals.css) ====================== */
+/* =========================================================
+   evals.css — shared primitives for the reliability one-pagers
+   Built on base.css tokens + the full rose-berry ramp.
+   Each concept page loads alone, so bare class names are safe.
+   ========================================================= */
+
+/* hero figures */
+.figs{ display:grid; }
+.fig .n{ display:block; font-weight:var(--w-xl); letter-spacing:-0.03em; line-height:.9; color:var(--rose-600); }
+.fig .n .hl{ color:var(--accent); font-weight:var(--w-xl); }
+.fig .lab{ display:block; font-size:11px; font-weight:var(--w-bd); letter-spacing:.18em;
+  text-transform:uppercase; color:var(--ink); margin-top:14px; }
+.fig .sub{ display:block; font-size:13px; font-weight:var(--w-lt); color:var(--ink-3); margin-top:7px; line-height:1.45; }
+
+/* section head: eyebrow stacked above a bold title */
+.sh{ display:block; }
+.sh .eyebrow{ display:block; margin-bottom:11px; }
+.sh h3{ font-size:20px; font-weight:var(--w-bd); letter-spacing:-0.005em; line-height:1.2; }
+.sh h3 .accent{ color:var(--accent); }
+
+.copy{ font-size:14.5px; font-weight:var(--w-lt); line-height:1.55; color:var(--ink-2); text-wrap:pretty; }
+.copy b, .copy strong{ font-weight:var(--w-bd); color:var(--ink); }
+
+/* card surfaces (square, hairline, no shadow — per system) */
+.card{ border:1px solid var(--hairline); padding:24px 26px; background:var(--paper); }
+.card--rule{ border:0; border-top:2px solid var(--ink); padding:22px 0 0; }
+.card--accent{ border:0; border-top:2px solid var(--accent); padding:22px 0 0; }
+
+/* three-loop step */
+.loop{ display:grid; grid-template-columns:auto 1fr; gap:18px; }
+.loop .stepno{ font-size:12px; font-weight:var(--w-bd); letter-spacing:.14em; color:var(--accent);
+  font-variant-numeric:tabular-nums; }
+.loop .when{ font-size:11px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase; color:var(--ink); }
+.loop .what{ font-size:13.5px; font-weight:var(--w-lt); line-height:1.5; color:var(--ink-2); margin-top:6px; }
+
+/* knowledge-artifact chips */
+.chips{ display:flex; flex-wrap:wrap; gap:7px; margin-top:12px; }
+.chip{ font-size:11px; font-weight:var(--w-md); letter-spacing:.02em; color:var(--rose-800);
+  border:1px solid var(--rose-300); background:var(--rose-50); padding:5px 10px; white-space:nowrap; }
+
+/* closing sign-off */
+.signoff{ font-weight:var(--w-xl); letter-spacing:-0.02em; line-height:1.12; }
+.signoff .accent{ color:var(--accent); }
+
+/* ====================== Infographic — capability rail (was concept4.css) ====================== */
+/* Concept 4 — Slim capability rail.  Scoped under .c4 */
+.sheet.c4{ width:1820px; height:1200px; padding:54px 60px 48px; display:flex; flex-direction:column; }
+
+.c4 .c4-head{ display:grid; grid-template-columns:1.7fr 1fr; gap:48px; align-items:end;
+  padding-bottom:22px; border-bottom:6px solid var(--ink); }
+.c4 .c4-head .ttl{ font-size:44px; max-width:22ch; }
+.c4 .c4-head .ttl b{ font-weight:var(--w-xl); }
+.c4 .c4-head .sub{ font-size:16px; color:var(--ink-2); padding-bottom:4px; }
+.c4 .c4-eyebrow-row{ display:flex; align-items:center; gap:14px; margin-bottom:14px; }
+.c4 .c4-eyebrow-row .ln{ flex:1; height:1px; background:var(--hairline); }
+
+.c4 .c4-body{ display:grid; grid-template-columns:360px 1fr; gap:0; flex:1; min-height:0; padding-top:26px; }
+
+.c4 .rail{ padding:6px 40px 6px 0; border-right:2px solid var(--ink); display:flex; flex-direction:column; }
+.c4 .rail .lab{ font-size:11px; font-weight:var(--w-bd); letter-spacing:.18em; text-transform:uppercase; color:var(--accent); }
+.c4 .rail h2{ font-size:24px; font-weight:var(--w-lt); letter-spacing:-0.01em; margin:14px 0 26px; max-width:14ch; }
+.c4 .rail .caps{ gap:0; }
+.c4 .rail .caps li{ grid-template-columns:9px 1fr; gap:13px; align-items:start; font-size:15px;
+  color:var(--ink); padding:13px 0; border-top:1px solid var(--hairline); line-height:1.3; }
+.c4 .rail .caps li:first-child{ border-top:0; }
+.c4 .rail .caps li::before{ margin-top:.45em; }
+.c4 .rail .metrics{ margin-top:auto; padding-top:26px; border-top:2px solid var(--ink); display:grid; gap:24px; }
+.c4 .rail .metric .num{ font-size:54px; }
+.c4 .rail .metric.alt .num{ font-size:38px; }
+.c4 .rail .metric .cap{ font-size:13px; }
+
+.c4 .c4-flows{ display:grid; grid-template-columns:1fr 1fr; gap:40px; padding-left:48px; min-height:0; }
+.c4 .panel{ display:flex; flex-direction:column; min-height:0; }
+.c4 .panel-head{ display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
+  padding-bottom:13px; margin-bottom:6px; border-bottom:2px solid var(--ink); }
+.c4 .panel-head .tag{ display:flex; align-items:baseline; gap:13px; }
+.c4 .panel-head .stage-no{ font-size:12px; font-weight:var(--w-bd); letter-spacing:.18em; color:var(--accent); }
+.c4 .panel-head .name{ font-size:21px; font-weight:var(--w-bd); letter-spacing:.02em; }
+.c4 .panel-head .time{ font-size:10.5px; font-weight:var(--w-bd); letter-spacing:.16em; text-transform:uppercase;
+  color:var(--ink-3); text-align:right; line-height:1.2; white-space:nowrap; }
+.c4 .panel-head .time b{ display:block; font-size:24px; font-weight:var(--w-bd); letter-spacing:-0.015em;
+  text-transform:none; color:var(--rose-600); margin-bottom:3px; }
+.c4 .c4-flows .panel:first-child .panel-head .time b{ color:var(--ink-2); }
+.c4 .flow-wrap{ flex:1; min-height:0; display:flex; justify-content:center; align-items:flex-start; padding-top:8px; }
+.c4 .flow-wrap .flow-svg{ height:100%; width:auto; max-width:100%; }
+.c4 .c4-legend{ padding-top:16px; margin-top:4px; }
+
+/* ====================== Infographic — flow diagram (was flow.css) ====================== */
+/* =========================================================
+   flow.css — flowchart node + edge styling (light theme)
+   Full rose-berry ramp mapped to roles.
+   ========================================================= */
+
+/* ---- shapes ---- */
+.fl-shape{ vector-effect:non-scaling-stroke; }
+
+.fl-proc{   fill:var(--paper-2); stroke:var(--ink); stroke-width:1.4; }      /* manual step */
+.fl-proc.fl-auto{   fill:var(--rose-100); stroke:var(--rose-500); stroke-width:1.4; }  /* automated step */
+.fl-proc.fl-human{  fill:#FFFFFF; stroke:var(--ink); stroke-width:1.4; }     /* human checkpoint (shared) */
+
+.fl-io{   fill:var(--rose-100); stroke:var(--ink); stroke-width:1.4; }       /* source documents (shared) */
+.fl-dec{  fill:var(--rose-50);  stroke:var(--rose-500); stroke-width:1.8; }  /* decision (shared) */
+.fl-term{ fill:var(--rose-600); stroke:var(--rose-600); stroke-width:1.4; }  /* submission complete (shared) */
+
+.fl-worker{ fill:var(--paper); stroke:var(--ink); stroke-width:1.4; }
+.fl-worker.fl-rework{    fill:var(--rose-200); stroke:var(--rose-700); stroke-width:1.6; }
+.fl-worker.fl-autorev{   fill:var(--rose-100); stroke:var(--rose-400); stroke-width:1.4; }
+.fl-worker.fl-knowledge{ fill:var(--rose-50);  stroke:var(--rose-300); stroke-width:1.4; stroke-dasharray:3 3; }
+
+.fl-chip{ fill:var(--paper); stroke:var(--rose-300); stroke-width:1.3; }
+
+/* ---- labels ---- */
+.fl-label{ font-family:var(--font); font-weight:var(--w-regular,400); fill:var(--ink); letter-spacing:-0.005em; }
+.fl-label--decision{ font-weight:var(--w-md); }
+.fl-label--terminal{ fill:#FFFFFF; font-weight:var(--w-md); }
+.fl-label--chip{ font-weight:var(--w-md); fill:var(--rose-800); letter-spacing:0.01em; }
+.fl-auto + .fl-label,
+.fl-label--process.fl-on-auto{ fill:var(--rose-900); }
+.fl-worker.fl-rework + .fl-label{ fill:var(--rose-900); }
+
+/* automated process text reads berry */
+.fl-node:has(.fl-auto) .fl-label{ fill:var(--rose-900); }
+.fl-node:has(.fl-rework) .fl-label{ fill:var(--rose-900); }
+.fl-node:has(.fl-autorev) .fl-label{ fill:var(--rose-800); }
+.fl-node:has(.fl-knowledge) .fl-label{ fill:var(--rose-800); font-weight:var(--w-md); }
+.fl-node:has(.fl-dec) .fl-label{ fill:var(--rose-800); }
+
+/* ---- edges ---- */
+.fl-edge{ fill:none; }
+.fl-edge--spine{  stroke:var(--ink);      stroke-width:1.6; }
+.fl-edge--branch{ stroke:var(--rose-400); stroke-width:1.3; }
+.fl-edge--loop{   stroke:var(--rose-600); stroke-width:1.8; }
+.fl-edge--know{   stroke:var(--rose-400); stroke-width:1.5; stroke-dasharray:4 4; }
+.fl-edge--dashed{ stroke-dasharray:4 4; }
+
+/* ---- edge labels (Yes / No / percentages) ---- */
+.fl-elabel{
+  font-family:var(--font); font-weight:var(--w-bd); font-size:11.5px;
+  letter-spacing:0.14em; text-transform:uppercase; fill:var(--ink);
+  paint-order:stroke; stroke:var(--paper); stroke-width:4px; stroke-linejoin:round;
+}
+.fl-elabel--loop{ fill:var(--rose-600); }
